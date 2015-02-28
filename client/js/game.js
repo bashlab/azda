@@ -3,11 +3,12 @@
   var worker = new Worker('js/worker/cal.js'); //HTML5 Web worker
   var mp=0,tk=0;
   var STATE_TYPE = {Menu:0, Play:1, End:2};
-  var gameState = STATE_TYPE.Menu;
   var seq; // Need to fetch from server
   var jsondata;
-  var postAjaxRequest = azdart.postAjaxRequest;
-  var setContentByDocId = azdart.setContentByDocId;
+  var postAjaxRequest = azda.postAjaxRequest;
+  var setContentByDocId = azda.setContentByDocId;
+  var i18n = azda.i18n;
+  var gameState = STATE_TYPE.Menu;
 
   postAjaxRequest('/getSeq',null,function(res){
     jsondata = JSON.parse(res);
@@ -53,6 +54,7 @@
   function endGame(){
     gameState = STATE_TYPE.End;
     setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" />");
+    worker.postMessage({'cmd':'endTimer'});
   }
 
   function submitResult(){
