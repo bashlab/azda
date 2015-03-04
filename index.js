@@ -13,7 +13,6 @@ var mongoose = require('mongoose');
 var app = express();
 var models = {
 	Sequence : require('./models/Sequence')(mongoose),
-	Encoding : require('./models/Encoding')(mongoose),
 	Leaderboard : require('./models/Leaderboard')(mongoose)
 };
 
@@ -51,9 +50,10 @@ app.get('/',function(req,res){
 });
 
 app.post('/getSeq',function(req,res){
-	models.Sequence.findSeqIdByAlias("Classic",function(noErr,id){
+	models.Sequence.findSeqInfoByAlias("Classic",function(noErr,doc){
 		res.setHeader("Content-Type", "application/json");
-		if(noErr===true) res.send("{\"seq\":\"abcdefghijklmnopqrstuvwxyz\",\"seqId\":\""+id+"\"}");
+		var mapping = doc.mapping === 'default' ? doc.seq : doc.mapping;
+		if(noErr===true) res.send("{\"seq\":\""+doc.seq+"\",\"seqId\":\""+doc.id+"\",\"mapping\":\""+mapping+"\"}");
 	});
 });
 

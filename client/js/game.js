@@ -4,6 +4,7 @@
   var mp=0,tk=0;
   var STATE_TYPE = {Menu:0, Play:1, End:2};
   var seq; // Need to fetch from server
+  var mapping;
   var jsondata;
   var postAjaxRequest = azda.postAjaxRequest;
   var setContentByDocId = azda.setContentByDocId;
@@ -13,6 +14,7 @@
   postAjaxRequest('/getSeq',null,function(res){
     jsondata = JSON.parse(res);
     seq = jsondata.seq;
+    mapping = jsondata.mapping;
     setContentByDocId("inp",seq);
     setContentByDocId("count",i18n.title);
     document.getElementById("leaderboard").onclick = function(){
@@ -77,9 +79,9 @@
         resetGame(); //Fast key for restart the game (using #space)
       } else {
         if(gameState===STATE_TYPE.Menu) startGame();
-        if(seq[mp]===inp){
+        if(mapping[mp]===inp){
           setContentByDocId("inp",'<span class=\"finished\">'+seq.substring(0,mp+1)+'</span>'+seq.substring(mp+1));
-          if(mp++===seq.length-1) endGame();
+          if(mp++===mapping.length-1) endGame();
         }
       }
     }

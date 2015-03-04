@@ -33,7 +33,6 @@ var timer = (function(){
 })();
 
 function cal(tk){
-
   var ms=tk%100;
   var s=((tk-ms)/100)%60;
   var mn=Math.floor(((tk-ms)/100)/60);
