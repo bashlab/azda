@@ -55,7 +55,8 @@
 
   function endGame(){
     gameState = STATE_TYPE.End;
-    setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" />");
+    setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" autofocus />");
+    document.getElementById('name').focus();
     worker.postMessage({'cmd':'endTimer'});
   }
 
