@@ -3,13 +3,14 @@
   var worker = new Worker('js/worker/cal.js'); //HTML5 Web worker
   var mp=0,tk=0;
   var STATE_TYPE = {Menu:0, Play:1, End:2};
+  var KEY = {Backspace:8, Enter: 13, Shift: 16, Ctrl: 17, Alt: 18, Esc: 27, Space:32};
   var seq; // Need to fetch from server
   var mapping;
   var jsondata;
   var postAjaxRequest = azda.postAjaxRequest;
   var setContentByDocId = azda.setContentByDocId;
   var i18n = azda.i18n;
-  var gameState = STATE_TYPE.Menu;
+  var state = STATE_TYPE.Menu;
 
   postAjaxRequest('/getSeq',null,function(res){
     jsondata = JSON.parse(res);
@@ -32,6 +33,7 @@
   },function(res){
   });
 
+  // Bind timer message handler
   worker.onmessage = function(e) {
     tk = e.data.tick;
     setContentByDocId("count",e.data.value);
@@ -40,29 +42,34 @@
     console.log('Error',e);
   };
 
+  // Preload audio assets
+  sound.preload();
+
   function resetGame(){
     worker.postMessage({'cmd':'resetTimer'});
     mp = 0;
-    gameState = STATE_TYPE.Menu;
+    state = STATE_TYPE.Menu;
     setContentByDocId("count",i18n.title);
     setContentByDocId("inp",seq);
   }
 
   function startGame(){
-    gameState = STATE_TYPE.Play;
+    state = STATE_TYPE.Play;
     worker.postMessage({'cmd':'startTimer'});
   }
 
   function endGame(){
-    gameState = STATE_TYPE.End;
+    state = STATE_TYPE.End;
     setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" autofocus />");
     document.getElementById('name').focus();
     worker.postMessage({'cmd':'endTimer'});
   }
 
   function submitResult(){
+    var name = document.getElementById("name").value;
+    if(name.length<=0) return;
     // Submit a post to backend
-    postAjaxRequest('/submit',JSON.stringify({name:document.getElementById("name").value,ticker:tk,sequence:jsondata.seqId}),function(res){
+    postAjaxRequest('/submit',JSON.stringify({name:name,ticker:tk,sequence:jsondata.seqId}),function(res){
       setContentByDocId("inp",jsondata.seq);
       resetGame();
     },function(res){
@@ -70,16 +77,19 @@
     });
   }
 
+  // Keydown handler
   window.onkeydown=function(e){
     // Game Logic
     var inp=String.fromCharCode(e.keyCode?e.keyCode:e.which).toLowerCase();
-    if(gameState===STATE_TYPE.End){
-      if(e.keyCode===13) submitResult(); // #ENTER key
+    if(e.keyCode!==KEY.Shift&&e.keyCode!==KEY.Ctrl&&e.keyCode!==KEY.Alt) sound.playOnce('keypress');
+    if(state===STATE_TYPE.End){
+      if(e.keyCode===KEY.Enter) submitResult();
     } else {
-      if(e.keyCode===32){ // #SPACE key
-        resetGame(); //Fast key for restart the game (using #space)
+      e.preventDefault();
+      if(e.keyCode===KEY.Space){
+        resetGame(); //Fast key for restart the game
       } else {
-        if(gameState===STATE_TYPE.Menu) startGame();
+        if(state===STATE_TYPE.Menu) startGame();
         if(mapping[mp]===inp){
           setContentByDocId("inp",'<span class=\"finished\">'+seq.substring(0,mp+1)+'</span>'+seq.substring(mp+1));
           if(mp++===mapping.length-1) endGame();

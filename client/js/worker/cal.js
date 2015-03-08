@@ -13,7 +13,7 @@ var ticker = (function(){ // Ticker Singleton
   };
 })();
 
-var timer = (function(){
+var timer = (function(){ // Timer Singleton
   var intvFunc;
   return {
     start: function (){
@@ -27,11 +27,13 @@ var timer = (function(){
       intvFunc = null;
     },
     reset: function (){
+      timer.end();
       ticker.clear();
     }
   };
 })();
 
+// Transform #tick to string and send back to main thread
 function cal(tk){
   var ms=tk%100;
   var s=((tk-ms)/100)%60;
@@ -45,6 +47,7 @@ self.endTimer   = timer.end;
 self.resetTimer = timer.reset;
 })();
 
+// Receive main thread message, and call corresponding function
 self.onmessage = function(e) {
   if(e.data && e.data.cmd && typeof self[e.data.cmd] === 'function'){
     self[e.data.cmd]();
