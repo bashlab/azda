@@ -5,7 +5,13 @@ body {
   height:100%;
   font-family: 'Roboto', sans-serif;
   color: #999;
-  cursor: pointer;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select  : none;
+  -khtml-user-select   : none;
+  -moz-user-select     : none;
+  -ms-user-select      : none;
+  user-select          : none;
 }
 ul{
   padding:0;
@@ -15,7 +21,8 @@ li{
   list-style:none;
 }
 #wrapper {
-  min-height:100%;
+  height:100%;
+  overflow: hidden;
   text-align:center;
   position:relative;
 }
@@ -118,6 +125,15 @@ p.li-desp{
   color: #aaa;
 }
 
+.sugar, .headsugar{
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.sugar:hover, .headsugar:hover{
+  opacity: 1;
+}
+
 .sugar{
   margin: 0;
   padding: 0;
@@ -199,29 +215,40 @@ div.lb-list-item-ticker{
 /*************************************/
 
 .panel{
-  background:#eee;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width:370px;
   height:400px;
+  margin: -200px 0 0 -185px;
+  z-index: 100;
+  background:#eee;
 }
 
 .panelhead{
+  position: absolute;
+  top: 0;
   width:100%;
   height:30px;
+  z-index: 101;
   background:#333;
 }
 
 .panelbody{
+  position: absolute;
+  top: 0;
   width:100%;
   height:100%;
+  padding-top: 30px;
+  box-sizing: border-box;
   overflow-x: hidden;
+  overflow-y: scroll;
   background:#eee;
   border-top: 5px solid #eee;
   border-bottom: 5px solid #eee;
 }
 
 #sugarpanel{
-  margin-top: 30px;
-  display:inline-block;
   visibility:hidden;
 }
 
