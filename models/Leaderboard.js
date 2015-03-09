@@ -7,7 +7,7 @@
   //module.exports = function(config,mongoose,nodemailer){
   module.exports = function(mongoose){
 
-    var MAXLEADER = 20;
+    var MAXLEADER = 6;
 
     // Define the account schema
     var LeaderboardSchema = new mongoose.Schema({
@@ -68,8 +68,31 @@
       return (mn===0?"":mn+".")+(s<10?"0"+s:s)+"."+(ms<10?"0"+ms:ms);
     };
 
+    var getBottommostRecordBySeqId = function(dobj,callback){
+      /*
+      * The mechanism to get the bottommost record in collection:leaderboards
+      * - User inserts without comparison when the collection is still not full (bounded by MAXLEADER)
+      *   return -8
+      * - Comparison will return the bottommost ticker value
+      */
+      Leaderboard.count(function(err,count){
+        if(err) callback(false);
+        else if(count>=0&&count<MAXLEADER){
+          callback(true,-8);
+        }
+        else if(count===MAXLEADER){
+          Leaderboard.findOne({sequence:dobj.sequence}).sort({ticker:-1}).exec(function(err,doc){
+            if(err) callback(false);
+            callback(true,doc.ticker);
+          });
+        }
+        else callback(false);
+      });
+    };
+
     return {
       parseTicker:parseTicker,
+      getBottommostRecordBySeqId:getBottommostRecordBySeqId,
       getAllRecordBySeqId:getAllRecordBySeqId,
       processSubmit: processSubmit,
       Leaderboard: Leaderboard

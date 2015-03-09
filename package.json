@@ -1,7 +1,7 @@
 {
-  "name": "AZDart",
+  "name": "azda",
   "version": "0.0.1",
-  "description": "Just for fun",
+  "description": "A game makes you typed faster",
   "dependencies": {
     "body-parser": "^1.9.2",
     "ejs": "^1.0.0",

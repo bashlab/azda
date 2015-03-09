@@ -77,22 +77,40 @@
   }
 
   function endGame(){
-    state = STATE_TYPE.End;
-    setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" autofocus />");
-    document.getElementById('name').focus();
     worker.postMessage({'cmd':'endTimer'});
+    postAjaxRequest('checkBreakRecord',JSON.stringify({sequence:jsondata.seqId}),function(res){
+      state = STATE_TYPE.End;
+      var jsondata = JSON.parse(res);
+      var bottomTicker = jsondata.ticker;
+      if(bottomTicker !== null){
+        if(bottomTicker == -8 || tk<=bottomTicker){
+          setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" autofocus />",true);
+        } else {
+          setContentByDocId("inp",i18n.gameOver,true);
+        }
+      } else {
+        setContentByDocId("inp",i18n.submitError,true);
+      }
+    },function(res){
+      worker.postMessage({'cmd':'endTimer'});
+    });
   }
 
-  function submitResult(){
-    var name = document.getElementById("name").value;
-    if(name.length<=0) return;
-    // Submit a post to backend
-    postAjaxRequest('/submit',JSON.stringify({name:name,ticker:tk,sequence:jsondata.seqId}),function(res){
-      setContentByDocId("inp",jsondata.seq);
+  function endGameProcess(){
+    var name = document.getElementById("name");
+    if(name!==null){
+      var nameVal = name.value;
+      if(nameVal.length<=0) return;
+      // Submit a post to backend
+      postAjaxRequest('/submit',JSON.stringify({name:nameVal,ticker:tk,sequence:jsondata.seqId}),function(res){
+        setContentByDocId("inp",jsondata.seq);
+        resetGame();
+      },function(res){
+        resetGame();
+      });
+    } else {
       resetGame();
-    },function(res){
-      resetGame();
-    });
+    }
   }
 
   // Keydown handler
@@ -101,12 +119,15 @@
     var inp=String.fromCharCode(e.keyCode?e.keyCode:e.which).toLowerCase();
     if(e.keyCode!==KEY.Shift&&e.keyCode!==KEY.Ctrl&&e.keyCode!==KEY.Alt) sound.playOnce('keypress');
     if(state===STATE_TYPE.End){
-      if(e.keyCode===KEY.Enter) submitResult();
+      if(e.keyCode===KEY.Enter) endGameProcess();
     } else {
       e.preventDefault();
       if(e.keyCode===KEY.Space){
         resetGame(); //Fast key for restart the game
-      } else {
+      } else if (e.keyCode === KEY.Esc){
+        sugarPanel.style.visibility = 'hidden';
+      }
+      else {
         if(state===STATE_TYPE.Menu) startGame();
         if(mapping[mp]===inp){
           setContentByDocId("inp",'<span class=\"finished\">'+seq.substring(0,mp+1)+'</span>'+seq.substring(mp+1));

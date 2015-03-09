@@ -64,6 +64,13 @@ app.post('/getRecord',function(req,res){
 	});
 });
 
+app.post('/checkBreakRecord',function(req,res){
+	models.Leaderboard.getBottommostRecordBySeqId(req.body,function(noErr,ticker){
+		res.setHeader("Content-Type", "application/json");
+		res.send("{\"ticker\":"+(noErr ? ticker : null)+"}");
+	});
+});
+
 app.post('/submit',function(req,res){
 	models.Leaderboard.processSubmit(req.body,function(noErr,msg){
 		res.setHeader("Content-Type", "application/json");

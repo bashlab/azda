@@ -25,8 +25,11 @@ var azda = {
       xmlhttp.send("");
     }
   },
-  setContentByDocId: function(id,renderHTML,isAppend){
-    document.getElementById(id).innerHTML = renderHTML;
+  setContentByDocId: function(id,renderHTML,isFocus){
+    var queryElm = document.getElementById(id);
+    var _isFocus = isFocus || false;
+    queryElm.innerHTML = renderHTML;
+    if(_isFocus) queryElm.focus();
   },
   STATE_TYPE : {Menu:0, Play:1, End:2},
   KEY : {Backspace:8, Enter: 13, Shift: 16, Ctrl: 17, Alt: 18, Esc: 27, Space:32}
