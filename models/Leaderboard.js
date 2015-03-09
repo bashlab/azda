@@ -54,6 +54,9 @@
     var getAllRecordBySeqId = function(dobj,callback){
       Leaderboard.find({sequence:dobj.sequence}).sort({ticker:1}).exec(function(err,docs){
         if(err) callback(false);
+        docs.forEach(function(doc){
+          doc.ticker = parseTicker(doc.ticker);
+        });
         callback(true,docs);
       });
     };

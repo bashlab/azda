@@ -60,16 +60,7 @@ app.post('/getSeq',function(req,res){
 app.post('/getRecord',function(req,res){
 	models.Leaderboard.getAllRecordBySeqId(req.body,function(noErr,docs){
 		res.setHeader("Content-Type", "application/json");
-		var renderHTML = "";
-		for(var i=0,j=docs,k=j.length;i<k;++i){
-			var doc = docs[i];
-			var indic = "";
-			if(i===0) indic = "lb-list-item-first";
-			else if(i==k-1) indic = "lb-list-item-last";
-			renderHTML += "<li class=\\\"lb-list-item "+indic+"\\\">"+"<div class=\\\"lb-list-item-name\\\">"+doc.name+"</div><div class=\\\"lb-list-item-ticker\\\">"+models.Leaderboard.parseTicker(doc.ticker)+"</div></li>";
-		}
-		renderHTML = "<ul>"+renderHTML+"</ul>";
-		if(noErr===true) res.send("{\"renderHTML\":\""+renderHTML+"\"}");
+		res.send(docs);
 	});
 });
 
