@@ -50,7 +50,7 @@ app.get('/',function(req,res){
 });
 
 app.post('/getSeq',function(req,res){
-	models.Sequence.findSeqInfoByAlias("Classic",function(noErr,doc){
+	models.Sequence.findSeqInfoByAlias(req.body,function(noErr,doc){
 		res.setHeader("Content-Type", "application/json");
 		var mapping = doc.mapping === 'default' ? doc.seq : doc.mapping;
 		if(noErr===true) res.send("{\"seq\":\""+doc.seq+"\",\"seqId\":\""+doc.id+"\",\"mapping\":\""+mapping+"\"}");

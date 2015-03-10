@@ -16,8 +16,8 @@
     });
     var Sequence = mongoose.model('Sequence',SequenceSchema);
 
-    var findSeqInfoByAlias = function(alias,callback){
-      Sequence.findOne({alias:alias},function(err,doc){
+    var findSeqInfoByAlias = function(dobj,callback){
+      Sequence.findOne({alias:dobj.mode},function(err,doc){
         if(err) callback(false,null);
         callback(true,doc);
       });

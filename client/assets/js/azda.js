@@ -6,7 +6,9 @@ var azda = {
     xmlhttp.onreadystatechange = function()
     {
       var response = xmlhttp.responseText;
-      xmlhttp.readyState===4 && xmlhttp.status===200 ? successCallBack(response) : failCallBack(response);
+      if(xmlhttp.readyState===4){
+        var callback = xmlhttp.status===200 ? successCallBack(response) : failCallBack(response);
+      }
     };
     xmlhttp.open("post",url,true);
     xmlhttp.setRequestHeader("Content-type","application/json");
@@ -25,11 +27,26 @@ var azda = {
       xmlhttp.send("");
     }
   },
-  setContentByDocId: function(id,renderHTML,isFocus){
+  setContentByDocId: function(id,renderHTML,isFocus,isAppend){
     var queryElm = document.getElementById(id);
     var _isFocus = isFocus || false;
-    queryElm.innerHTML = renderHTML;
+    var _isAppend = isAppend || false;
+    if(_isAppend) queryElm.innerHTML += renderHTML;
+    else queryElm.innerHTML = renderHTML;
     if(_isFocus) queryElm.focus();
+  },
+  id$: function(id){
+    return document.getElementById(id);
+  },
+  /**
+  * merge: a function to merge two object
+  *  - the properties inside aobj will overlap those inside oobj
+  */
+  merge: function(oobj,aobj){
+    for(var _key in aobj){
+      oobj[_key] = aobj[_key];
+    }
+    return oobj;
   },
   STATE_TYPE : {Menu:0, Play:1, End:2},
   KEY : {Backspace:8, Enter: 13, Shift: 16, Ctrl: 17, Alt: 18, Esc: 27, Space:32}

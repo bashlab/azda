@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-    <link href='assets/css/override.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href='assets/css/azda.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href='assets/css/sugarpanel.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href='assets/css/scrollbar.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
     <script src='assets/js/azda.js'></script>
     <script src='assets/js/azda.i18n.js'></script>
@@ -16,19 +18,15 @@
         <p class="key" id="inp"></p>
       </div>
   		<div id="containerfooter">
-        <div class="footertext">da us: azda@gmail.com</div>
+        <div class="footertext">da us: dev.bashlab@gmail.com</div>
         <div class="sugar" id="hints">H</div>
         <div class="sugar" id="leaderboard">L</div>
+        <div class="sugar" id="modeboard">M</div>
       </div>
-      <div class="panel" id="sugarpanel">
-        <div class="panelhead">
-          <i class="fa fa-trophy"></i>
-          <p>Leaderboard</p>
-        </div>
-        <div class="panelbody" id="sugarpanelbody">
-        </div>
-      </div>
+      <!--render by javascript -->
   	</div>
-    <script src='assets/js/game.js'></script>
+    <script src="assets/js/azda.SugarPanel.js"></script>
+    <script src="assets/js/azda.Game.js"></script>
+    <script src='assets/js/main.js'></script>
   </body>
 </html>
