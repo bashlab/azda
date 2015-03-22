@@ -74,6 +74,7 @@
   function startGame(){
     state = STATE_TYPE.Play;
     worker.postMessage({'cmd':'startTimer'});
+    setContentByDocId("inp", seq.split('').map(function(v){return '<div class="char">'+v+'</div>'}).join(''));
   }
 
   function endGame(){
@@ -130,7 +131,7 @@
       else {
         if(state===STATE_TYPE.Menu) startGame();
         if(mapping[mp]===inp){
-          setContentByDocId("inp",'<span class=\"finished\">'+seq.substring(0,mp+1)+'</span>'+seq.substring(mp+1));
+          document.getElementById('inp').children[mp].classList.add('finished');
           if(mp++===mapping.length-1) endGame();
         }
       }

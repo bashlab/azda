@@ -1,0 +1,41 @@
+#inp {
+  color: #999;
+}
+
+#inp > .char {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#inp .finished {
+  color: #eee;
+  -webkit-animation-name: example;
+     -moz-animation-name: example;
+       -o-animation-name: example;
+          animation-name: example;
+  -webkit-animation-duration: 0.3s;
+     -moz-animation-duration: 0.3s;
+       -o-animation-duration: 0.3s;
+          animation-duration: 0.3s;
+}
+
+@-webkit-keyframes example {
+    0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
+    50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
+    100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
+}
+@-moz-keyframes example {
+    0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
+    50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
+    100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
+}
+@-o-keyframes example {
+    0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
+    50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
+    100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
+}
+@keyframes example {
+    0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
+    50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
+    100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
+}
