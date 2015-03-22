@@ -29,7 +29,10 @@ var azda = {
     var queryElm = document.getElementById(id);
     var _isFocus = isFocus || false;
     queryElm.innerHTML = renderHTML;
-    if(_isFocus) queryElm.focus();
+    if(_isFocus){
+      var focusElm=queryElm.querySelector('[autofocus]');
+      focusElm && focusElm.focus();
+    }
   },
   STATE_TYPE : {Menu:0, Play:1, End:2},
   KEY : {Backspace:8, Enter: 13, Shift: 16, Ctrl: 17, Alt: 18, Esc: 27, Space:32}
