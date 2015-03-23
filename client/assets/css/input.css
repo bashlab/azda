@@ -5,36 +5,38 @@
 #inp > .char {
   display: inline-block;
   vertical-align: top;
+  margin-top: 0px;
+  margin-bottom: 2px;
 }
 
 #inp .finished {
   color: #eee;
-  -webkit-animation-name: example;
-     -moz-animation-name: example;
-       -o-animation-name: example;
-          animation-name: example;
+  -webkit-animation-name: keypress-animate;
+     -moz-animation-name: keypress-animate;
+       -o-animation-name: keypress-animate;
+          animation-name: keypress-animate;
   -webkit-animation-duration: 0.3s;
      -moz-animation-duration: 0.3s;
        -o-animation-duration: 0.3s;
           animation-duration: 0.3s;
 }
 
-@-webkit-keyframes example {
+@-webkit-keyframes keypress-animate {
     0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
     50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
     100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
 }
-@-moz-keyframes example {
+@-moz-keyframes keypress-animate {
     0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
     50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
     100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
 }
-@-o-keyframes example {
+@-o-keyframes keypress-animate {
     0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
     50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
     100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
 }
-@keyframes example {
+@keyframes keypress-animate {
     0%   {color: #999; margin-top: 0px; margin-bottom: 2px;}
     50%  {color: #999; margin-top: 2px; margin-bottom: 0px;}
     100% {color: #eee; margin-top: 0px; margin-bottom: 2px;}
