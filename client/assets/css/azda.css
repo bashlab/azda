@@ -61,10 +61,6 @@ li{
   letter-spacing: 2px;
 }
 
-span.finished {
-  color: #eee;
-}
-
 .action {
   list-style-type: none;
   padding:0;

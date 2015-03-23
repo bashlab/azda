@@ -33,6 +33,7 @@ azda.Game = function(opts){
   this.start = function(){
     this.status = STATE_TYPE.Play;
     worker.postMessage({'cmd':'startTimer'});
+    setContentByDocId("inp", this.sequence.seq.split('').map(function(v){return '<div class="char">'+v+'</div>'}).join(''));
   };
   /**
   * reset <function> : reset the game

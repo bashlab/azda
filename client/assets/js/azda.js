@@ -33,7 +33,10 @@ var azda = {
     var _isAppend = isAppend || false;
     if(_isAppend) queryElm.innerHTML += renderHTML;
     else queryElm.innerHTML = renderHTML;
-    if(_isFocus) queryElm.focus();
+    if(_isFocus){
+      var focusElm=queryElm.querySelector('[autofocus]');
+      focusElm && focusElm.focus();
+    }
   },
   id$: function(id){
     return document.getElementById(id);

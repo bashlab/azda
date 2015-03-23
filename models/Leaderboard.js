@@ -7,7 +7,7 @@
   //module.exports = function(config,mongoose,nodemailer){
   module.exports = function(mongoose){
 
-    var MAXLEADER = 50;
+    var MAXLEADER = 20;
 
     // Define the account schema
     var LeaderboardSchema = new mongoose.Schema({

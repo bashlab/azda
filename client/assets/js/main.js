@@ -66,7 +66,7 @@
       else {
         if(game.status===STATE_TYPE.Menu) game.start();
         if(_seqObj.mapping[game.ackNextChar]===inp){
-          setContentByDocId("inp",'<span class=\"finished\">'+_seqObj.seq.substring(0,game.ackNextChar+1)+'</span>'+_seqObj.seq.substring(game.ackNextChar+1));
+          document.getElementById('inp').children[game.ackNextChar].classList.add('finished');
           if(game.ackNextChar++===_seqObj.mapping.length-1) game.end();
         }
       }
