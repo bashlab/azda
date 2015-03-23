@@ -31,7 +31,9 @@ li{
   position:relative;
 }
 #header {
-  padding:50px;
+  padding-bottom: 50px;
+  padding-top:120px;
+  height:50px;
   background:#fff;
 }
 #content {
@@ -88,7 +90,7 @@ li.circle{
 }
 
 #modeboard{
-  background-color:#656CCB;
+  background-color:#CC4452;
 }
 
 li.circle p{

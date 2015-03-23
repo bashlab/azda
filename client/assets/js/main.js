@@ -2,27 +2,29 @@
   'use strict';
   var postAjaxRequest = azda.postAjaxRequest;
   var setContentByDocId = azda.setContentByDocId;
-  var i18n = azda.i18n;
-  var id$ = azda.id$; // id query
   var STATE_TYPE = azda.STATE_TYPE;
   var KEY = azda.KEY;
-  var jsondata;
 
   var sugarPanel = new azda.SugarPanel({
     renderID: "wrapper"
   });
-
-  var game = new azda.Game({
-    // base, mode is defined here
-  });
+  var game = new azda.Game({});
+  var pad = game.pad;
 
   // Preload audio assets
   sound.preload();
 
-  document.documentElement.onclick = function(event){
-    // Click empty space to close the panel
-    sugarPanel.hide();
-  };
+  // Use to follow JSLint, cannot create function inside a loop
+  function padHandler(){
+    return function(e){
+      setContentByDocId('round','');
+      setContentByDocId('best','');
+      var _id = e.target.id;
+      pad.processButtonClick(_id,function(_cfg){
+        game.reset(_cfg);
+      });
+    };
+  }
 
   sugarPanel.addSugarOnClickHandler("leaderboard",function(callback){
     postAjaxRequest('/getRecord',JSON.stringify({sequence:game.sequence.seqId}),function(res){
@@ -30,11 +32,7 @@
       var renderHTML = "";
       if(jsondata){
         for(var i=0,j=jsondata,k=j.length;i<k;++i){
-          var doc = j[i];
-          var indic = "";
-          if(i===0) indic = "lb-list-item-first";
-          else if(i==k-1) indic = "lb-list-item-last";
-          renderHTML += "<div class=\"ranking\"><p>"+(i+1)+"</p></div><li class=\"lb-list-item "+indic+"\">"+"<div class=\"lb-list-item-name\">"+doc.name+"</div><div class=\"lb-list-item-ticker\">"+doc.ticker+"</div></li>";
+          renderHTML += sugarPanel.template.leaderboard.getHTML(i+1,j[i]);
         }
       }
       callback(renderHTML);
@@ -42,7 +40,13 @@
     });
   });
 
-  sugarPanel.addSugarOnClickHandler("modeboard","");
+  sugarPanel.addSugarOnClickHandler("modeboard",function(callback){
+    callback(pad.renderHTML); // pre-processing, see azda.GamePad
+    var buttons = document.getElementsByClassName("select-button");
+    for(var i=0, j=buttons.length;i<j;++i){
+      buttons[i].onclick = padHandler();
+    }
+  });
 
   // Keydown handler
   window.onkeydown=function(e){

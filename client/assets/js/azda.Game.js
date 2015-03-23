@@ -8,7 +8,6 @@
 /// The following object properties are defined inside opts
 /// <property> <type><required|optional:default>
 ///
-/// base (string)(required): define the game base
 /// mode (string)(optional:'Classic'): define the game mode (aka. alias in collection:sequence)
 ///
 azda.Game = function(opts){
@@ -22,9 +21,10 @@ azda.Game = function(opts){
   var i18n = azda.i18n;
   var id$ = azda.id$; // id query
   var STATE_TYPE = azda.STATE_TYPE;
+  var roundResult = [];
   var tk=0; // tk is the ticker for each game
-  var base = opts.base;
-  var mode = opts.mode || 'Classic';
+  var mode = opts.mode || 'classic';
+  var time = opts.time || 1; // repeat the game and choose the best result to submit
 
   // Public stuff
   /**
@@ -37,45 +37,87 @@ azda.Game = function(opts){
   /**
   * reset <function> : reset the game
   */
-  this.reset = function(){
+  this.reset = function(opts){
+    worker.postMessage({'cmd':'resetTimer'});
     this.ackNextChar = 0;
     this.status = STATE_TYPE.Menu;
-    worker.postMessage({'cmd':'resetTimer'});
-    setContentByDocId("count",i18n.title);
-    setContentByDocId("inp",this.sequence.seq);
+    if(opts!==undefined){
+      this.currentTry = 1; // reset
+      roundResult = [];
+      if(opts.online!==undefined) this.online = opts.online;
+      if(opts.retry!==undefined) this.retry = opts.retry;
+      if(opts.alias!==undefined){
+        postAjaxRequest('/getSeq',JSON.stringify({mode:opts.alias}),function(res){
+          jsondata = JSON.parse(res);
+          oThis.sequence = jsondata;
+          setContentByDocId("count",i18n.title);
+          setContentByDocId("inp",jsondata.seq);
+        },function(res){
+          console.log(res);
+        });
+      } else {
+        setContentByDocId("count",i18n.title);
+        setContentByDocId("inp",this.sequence.seq);
+      }
+    } else{
+      setContentByDocId("count",i18n.title);
+      setContentByDocId("inp",this.sequence.seq);
+    }
   };
   /**
   * end <function> : end the game
   */
   this.end = function(){
     this.status = STATE_TYPE.End;
+    roundResult.push(tk);
+    var max = roundResult.sort()[0];
+    // Todo: Render the round result (No need to consider 1 trial case)
+    if(this.retry !== 1){
+      setContentByDocId('round','<p>Round '+this.currentTry+': '+azda.cal(tk)+'</p>',false,true);
+      setContentByDocId('best','Fastest: ' + azda.cal(max));
+    }
     worker.postMessage({'cmd':'endTimer'});
-    postAjaxRequest('checkBreakRecord',JSON.stringify({sequence:this.sequence.seqId}),function(res){
-      var jsondata = JSON.parse(res);
-      var bottomTicker = jsondata.ticker;
-      if(bottomTicker !== null){
-        if(bottomTicker == -8 || tk<=bottomTicker){
-          setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" autofocus />",true);
-        } else {
-          setContentByDocId("inp",i18n.gameOver,true);
-        }
+    if(this.retry!=this.currentTry){
+      // Still on-going match/practice
+      this.currentTry++;
+      this.reset();
+    } else {
+      if(this.online){
+        postAjaxRequest('checkBreakRecord',JSON.stringify({sequence:this.sequence.seqId}),function(res){
+          var jsondata = JSON.parse(res);
+          var bottomTicker = jsondata.ticker;
+          if(bottomTicker !== null){
+            if(bottomTicker == -8 || tk<=bottomTicker){
+              setContentByDocId("inp","<input placeholder=\""+i18n.namePlaceholder+"\" class=\"textfield\" id=\"name\" type=\"text\" autofocus />",true);
+            } else {
+              setContentByDocId("inp",i18n.gameOver,true);
+            }
+          } else {
+            setContentByDocId("inp",i18n.submitError,true);
+          }
+        },function(res){
+          worker.postMessage({'cmd':'endTimer'});
+        });
       } else {
-        setContentByDocId("inp",i18n.submitError,true);
+        // In practice mode
+        setContentByDocId("inp",i18n.practice,true);
       }
-    },function(res){
-      worker.postMessage({'cmd':'endTimer'});
-    });
+    }
   };
   /**
   * endProcess <function> : after end the game
   */
   this.endProcess = function(){
     var name = id$("name");
+    setContentByDocId('round','');
+    setContentByDocId('best','');
+    // Decision to find maximum round result
+    var max = roundResult.sort()[0];
     if(name!==null){
       var nameVal = name.value;
       if(nameVal.length<=0) return;
       // Submit a post to backend
-      postAjaxRequest('/submit',JSON.stringify({name:nameVal,ticker:tk,sequence:oThis.sequence.seqId}),function(res){
+      postAjaxRequest('/submit',JSON.stringify({name:nameVal,ticker:max,sequence:oThis.sequence.seqId}),function(res){
         setContentByDocId("inp",oThis.sequence.seq);
         oThis.reset();
       },function(res){
@@ -103,6 +145,18 @@ azda.Game = function(opts){
   * ackNextChar <int> : // ackNextChar is the pointer to acknowledge the next character should be typed
   */
   this.ackNextChar = 0;
+  /**
+  * retry <int> : // retry time and choose the best result to submit
+  */
+  this.retry = 1;
+  /**
+  * currentTry <int>
+  */
+  this.currentTry = 1;
+  /**
+  * online <boolean> : // send record if online is true and vice versa
+  */
+  this.online = true;
 
   // Private stuff
   /**
@@ -135,6 +189,8 @@ azda.Game = function(opts){
     },function(res){
       console.log(res);
     });
+    //
+    oThis.pad = new azda.GamePad();
   })(_bindTimer,mode);
 
 };

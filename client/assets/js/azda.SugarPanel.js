@@ -38,34 +38,41 @@ azda.SugarPanel = function(opts){
   * renderBody <function> : render the panel body externally
   */
   this.renderBody = function(body){
-    setContentByDocId(this.template.idClassSet.panelBody,body);
+    setContentByDocId(this.template.container.idClassSet.panelBody,body);
   };
   /*
   * template <object>
   */
   this.template = {
-    idClassSet: {
-      panel: "sugarpanel",
-      panelHeadClass: "panelhead",
-      panelBody: "sugarpanelbody",
-      panelBodyClass: "panelbody",
-      panelHeadIcon : "panelheadicon",
-      panelHeadTitle: "panelheadtitle"
+    container: {
+      idClassSet: {
+        panel: "sugarpanel",
+        panelHeadClass: "panelhead",
+        panelBody: "sugarpanelbody",
+        panelBodyClass: "panelbody",
+        panelHeadIcon : "panelheadicon",
+        panelHeadTitle: "panelheadtitle"
+      },
+      rawHTML: "<div class=\"panel\" id=\"%panel%\"><div class=\"%panelHeadClass%\"><i id=\"%panelHeadIcon%\"></i><p id=\"%panelHeadTitle%\"></p></div><div class=\"%panelBodyClass%\" id=\"%panelBody%\"></div></div>"
     },
-    rawHTML: "<div class=\"panel\" id=\"%panel%\"><div class=\"%panelHeadClass%\"><i id=\"%panelHeadIcon%\"></i><p id=\"%panelHeadTitle%\"></p></div><div class=\"%panelBodyClass%\" id=\"%panelBody%\"></div></div>",
+    leaderboard:{
+      getHTML: function(i,doc){
+        return "<div class=\"ranking\"><p>"+i+"</p></div><li class=\"lb-list-item\">"+"<div class=\"lb-list-item-name\">"+doc.name+"</div><div class=\"lb-list-item-ticker\">"+doc.ticker+"</div></li>";
+      }
+    },
     build: function(){
-      var _h = this.rawHTML;
-      var _s = this.idClassSet;
+      var _h = this.container.rawHTML;
+      var _s = this.container.idClassSet;
       for(var _key in _s) {
         if (_s.hasOwnProperty(_key)) _h = _h.replace("%"+_key+"%",_s[_key]); // doesn't check down the prototype chain
       }
       return _h;
     },
     getPanel: function(){
-      return id$(this.idClassSet.panel);
+      return id$(this.container.idClassSet.panel);
     },
     getPanelBody: function(){
-      return id$(this.idClassSet.panelBody);
+      return id$(this.container.idClassSet.panelBody);
     }
   };
   /*
@@ -89,7 +96,7 @@ azda.SugarPanel = function(opts){
   this.openSugar = function(boardKey,body){
     var _cfg = this.sugarCfg[boardKey];
     var _body = body || "";
-    var _idClass = this.template.idClassSet;
+    var _idClass = this.template.container.idClassSet;
     if(_cfg){
       id$(_idClass.panelHeadIcon).className = _cfg.iconClass;
       setContentByDocId(_idClass.panelHeadTitle,_cfg.headTitle);
@@ -129,6 +136,15 @@ azda.SugarPanel = function(opts){
     oThis.template.getPanel().onclick = function(event){
       event.stopPropagation();
     };
+    document.documentElement.onclick = function(event){
+      oThis.hide(); // Click empty space to close the panel
+    };
+  };
+  /*
+  * _preprocess <function> :
+  */
+  var _preprocess = function(){
+    oThis.renderHTML = oThis.template.build();
   };
 
   // Initialization

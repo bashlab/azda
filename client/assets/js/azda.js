@@ -38,6 +38,12 @@ var azda = {
   id$: function(id){
     return document.getElementById(id);
   },
+  cal: function(tk){
+    var ms=tk%100;
+    var s=((tk-ms)/100)%60;
+    var mn=Math.floor(((tk-ms)/100)/60);
+    return (mn<10?"0"+mn:mn)+":"+(s<10?"0"+s:s)+":"+(ms<10?"0"+ms:ms);
+  },
   /**
   * merge: a function to merge two object
   *  - the properties inside aobj will overlap those inside oobj

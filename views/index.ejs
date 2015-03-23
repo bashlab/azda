@@ -5,6 +5,7 @@
     <link rel="stylesheet" href='assets/css/azda.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href='assets/css/sugarpanel.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href='assets/css/scrollbar.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href='assets/css/slider.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
     <script src='assets/js/azda.js'></script>
     <script src='assets/js/azda.i18n.js'></script>
@@ -12,7 +13,12 @@
   </head>
   <body>
   	<div id="wrapper">
-  		<div id="header"></div>
+  		<div id="header">
+        <ul>
+          <li id="round"></li>
+          <li id="best"></li>
+        </ul>
+      </div>
   		<div id="containerbody">
         <p id="count"></p>
         <p class="key" id="inp"></p>
@@ -26,6 +32,7 @@
       <!--render by javascript -->
   	</div>
     <script src="assets/js/azda.SugarPanel.js"></script>
+    <script src="assets/js/azda.GamePad.js"></script>
     <script src="assets/js/azda.Game.js"></script>
     <script src='assets/js/main.js'></script>
   </body>

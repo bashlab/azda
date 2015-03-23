@@ -7,7 +7,7 @@
   //module.exports = function(config,mongoose,nodemailer){
   module.exports = function(mongoose){
 
-    var MAXLEADER = 6;
+    var MAXLEADER = 50;
 
     // Define the account schema
     var LeaderboardSchema = new mongoose.Schema({
@@ -75,7 +75,7 @@
       *   return -8
       * - Comparison will return the bottommost ticker value
       */
-      Leaderboard.count(function(err,count){
+      Leaderboard.find({sequence:dobj.sequence}).count(function(err,count){
         if(err) callback(false);
         else if(count>=0&&count<MAXLEADER){
           callback(true,-8);
