@@ -41,6 +41,29 @@ var azda = {
   id$: function(id){
     return document.getElementById(id);
   },
+  cssClass: function(el){
+    var css = (el.getAttribute('class')||'').split(/\s+/);
+    css.contains = function(className){
+      return this.indexOf(className) >= 0;
+    };
+    css.add = function(className){
+      if(!css.contains(className)){
+        this.push(className);
+        el.setAttribute('class', this.join(' '));
+      }
+    };
+    css.remove = function(className){
+      var idx = this.indexOf(className);
+      if(idx >= 0) {
+        this.splice(idx, 1);
+        el.setAttribute('class', this.join(' '));
+      }
+    };
+    css.toggle = function(className){
+      this[this.contains(className) ? remove : add](className);
+    };
+    return css;
+  },
   cal: function(tk){
     var ms=tk%100;
     var s=((tk-ms)/100)%60;

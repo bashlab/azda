@@ -66,7 +66,7 @@
       else {
         if(game.status===STATE_TYPE.Menu) game.start();
         if(_seqObj.mapping[game.ackNextChar]===inp){
-          document.getElementById('inp').children[game.ackNextChar].classList.add('finished');
+          azda.cssClass(azda.id$('inp').children[game.ackNextChar]).add('finished');
           if(game.ackNextChar++===_seqObj.mapping.length-1) game.end();
         }
       }
